@@ -21,6 +21,7 @@
           background: #f1f1f1;
           max-height: 368px;
         }
+
         app-toolbar {
           background-color: #4285f4;
           color: #fff;
@@ -33,18 +34,12 @@
         paper-icon-button + [main-title] {
           margin-left: 24px;
         }
-        paper-progress {
-          display: block;
-          width: 100%;
-          --paper-progress-active-color: rgba(255, 255, 255, 0.5);
-          --paper-progress-container-color: transparent;
-        }
-
+            
         app-header {
           @apply --layout-fixed-top;
           color: #fff;
           --app-header-background-rear-layer: {
-            background-color: #ef6c00;
+          background-color: #ef6c00;*/
           }
         }
 
@@ -54,24 +49,88 @@
             background-color: #B0BEC5;
           }
         }
+
+        app-header app-toolbar {
+          background-color: white;
+          color: black;
+        }
+
+        #mainHeader {
+          opacity: 1;
+          z-index: var(--main-header-zindex);
+          /*box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);*/
+        }
+
+        /*div[main-title] {
+            text-align: center; 
+            vertical-align: middle;
+            font-size: 28px;
+            line-height: 64px;
+        }*/
         /*sample-content {
           padding-top: 64px;
         }*/
       </style>
     </custom-style>
 
-    <app-header reveals>
-      <app-toolbar>
-        <paper-icon-button icon="menu" on-tap="drawerClick"></paper-icon-button>
-        <div main-title>Layout Soma</div>
-        <paper-icon-button icon="delete"></paper-icon-button>
-        <paper-icon-button icon="search"></paper-icon-button>
-        <paper-icon-button icon="close"></paper-icon-button>
-        <paper-progress value="10" indeterminate bottom-item></paper-progress>
-      </app-toolbar>
-    </app-header>
-    <app-drawer id="drawer" swipe-open></app-drawer>
-    <!--<sample-content size="10"></sample-content>-->
+    <!--<app-header-layout fullbleed>
+      <app-header slot="header" shadow>
+        <app-toolbar>
+          <template is="dom-if" if="{{narrowLayout}}">
+            <paper-icon-button id="menuButton" icon="menu" on-tap="_menuToggle"></paper-icon-button>
+          </template>
+
+          <div style="width: 15px"></div>
+          <img src="../img/soma_logo.png" style="height: 60px"></img>
+          <div main-title style="align-self: center; text-align: center; vertical-align: middle;"></div>
+          <a href="/mxml/index.html" target="_blank" class="" style="text-decoration: none;">
+            <paper-icon-button id="homeIcon" class="mainToolbarIcon" icon="home" style="z-index:100;"></paper-icon-button>
+          </a>
+        </app-toolbar>
+      </app-header>-->
+
+    <app-header-layout fullbleed>
+      <app-header slot="header" shadow> 
+        <app-toolbar>   
+          <paper-icon-button icon="menu" on-tap="drawerClick"></paper-icon-button>          
+          <div style="width: 15px"></div>
+          <img src="../img/soma_logo.png" style="height: 60px"></img>
+          <div main-title style="align-self: center; text-align: center; vertical-align: middle;"></div>
+          <a href="/mxml/index.html" target="_blank" class="" style="text-decoration: none;">
+            <paper-icon-button id="homeIcon" class="mainToolbarIcon" icon="home" style="z-index:100;"></paper-icon-button>
+          </a>
+        </app-toolbar>
+      </app-header>
+
+      <app-drawer-layout id="drawerLayout" style="width: 100%; height: calc(100vh - 64px)">
+        <app-drawer slot="drawer" id="navDrawer">
+            <div id="drawerContainer" class="primaryCombination" style="width: 100%; height: 100vh">
+              <app-toolbar name="topologyTree" class="navTitle horizontalGroup secondaryCombination" style="margin-top: 64px;">
+
+                <div main-title>TOPOLOGIA</div>
+                <!--<paper-icon-button icon="delete"></paper-icon-button>
+                <paper-icon-button icon="search"></paper-icon-button>-->
+                <paper-icon-button icon="close" on-tap="_exitTopologia"></paper-icon-button>
+                <!--<paper-progress value="10" indeterminate bottom-item></paper-progress>-->
+              </app-toolbar>
+
+            <div style="background: yellow;height: calc(100% - 128px)">
+              <slot name="navigation"></slot>
+            </div>
+          </div>
+        </app-drawer>
+
+        <app-toolbar>
+          <div align="center" main-title>Relatório</div>
+        </app-toolbar>
+
+        <div style="background: orange;height: calc(100% - 64px)">
+            <slot name="content"></slot>
+        </div>        
+
+      </app-drawer-layout>
+      <!--<sample-content size="10"></sample-content>-->
+    </app-header-layout>
   </template>
 
   <script>
@@ -95,7 +154,13 @@
       }
 
       drawerClick(){
-        this.$.drawer.toggle();
+        this.$.navDrawer.toggle();
+        this.$.drawerLayout.forceNarrow = !this.$.navDrawer.opened;
+      }
+
+      _exitTopologia() {
+          this.$.navDrawer.close();
+          this.$.drawerLayout.forceNarrow = !this.$.navDrawer.opened;
       }
 
     }
