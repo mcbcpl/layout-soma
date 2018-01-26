@@ -10,6 +10,12 @@
 
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../polymer/lib/elements/dom-bind.html">
+    <link rel="import" href="../../app-route/app-route.html">
+    <link rel="import" href="../../app-route/app-location.html">
+    <link rel="import" href="../../iron-pages/iron-pages.html">
+    <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+
     <link rel="import" href="../layout-soma.html">
 
     <custom-style>
@@ -19,9 +25,46 @@
   </head>
 
   <body>
-      <layout-soma>
-        <div style="background: blue;height: 50px;width: 50px" slot="navigation">  
-        </div>
-      </layout-soma>
+    <dom-bind>
+      <template>
+        <app-location id="location" route="{{route}}" use-hash-as-path></app-location>
+
+        <app-route
+            route="{{route}}"
+            pattern="/:page"
+            data="{{routeData}}"
+            tail="{{subroute}}">po
+        </app-route>
+
+        <layout-soma>
+          <div slot="navigation">
+            <paper-icon-button icon="search" target="/page1"></paper-icon-button>
+            <paper-icon-button icon="search" target="/page2"></paper-icon-button>
+            <paper-icon-button icon="search" target="/page3"></paper-icon-button>
+          </div>
+          <iron-pages 
+            slot="content"
+            id="viewStack"
+            selected="[[routeData.page]]"
+            attr-for-selected="name"
+            fallback-selection="page1"
+            style="height:100%;width:100%">
+            <div name="page1" style="background: blue;height:100%;width:100%"></div>
+            <div name="page2" style="background: red;height:100%;width:100%"></div>
+            <div name="page3" style="background: green;height:100%;width:100%"></div>
+          </iron-pages>
+        </layout-soma>
+      </template>
+    </dom-bind>
   </body>
+  
+  <script>
+    let buttonList = document.querySelectorAll('paper-icon-button');
+    for (let button of buttonList) {
+      button.addEventListener("tap", () => {
+        let location = document.querySelector("#location");
+        location.path = button.getAttribute("target");
+      });
+    }
+  </script>
 </html>
